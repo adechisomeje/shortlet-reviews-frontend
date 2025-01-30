@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -8,6 +8,14 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [redirectTo, setRedirectTo] = useState("/");
+
+  useEffect(() => {
+    const storedRedirect = localStorage.getItem("redirectTo");
+    if (storedRedirect) {
+      setRedirectTo(storedRedirect);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,9 +28,10 @@ export default function Login() {
 
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/users/login`, formData);
-      localStorage.setItem("token", response.data.token); // Store JWT token
-      setSuccess("Login successful! Redirecting to homepage...");
-      setTimeout(() => router.push("/"), 3000); // Redirect after 3 seconds
+      localStorage.setItem("token", response.data.token);
+      localStorage.removeItem("redirectTo"); // Clear stored redirect location
+      setSuccess("Login successful! Redirecting...");
+      setTimeout(() => router.push(redirectTo), 2000); // Redirect to stored page
     } catch (error) {
       setError(error.response?.data?.message || "Login failed.");
     }

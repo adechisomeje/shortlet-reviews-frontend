@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation"; // Helps detect page changes
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +43,15 @@ export default function RootLayout({ children }) {
             <Link href="/">Shortlet Reviews</Link>
           </h1>
 
-          <div>
+          <div className="flex gap-4">
+            {user && (
+              <Link href="/add-apartment">
+                <button className="bg-yellow-500 px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-300">
+                  Add Apartment
+                </button>
+              </Link>
+            )}
+
             {user ? (
               <button
                 onClick={handleLogout}
@@ -54,7 +62,7 @@ export default function RootLayout({ children }) {
             ) : (
               <>
                 <Link href="/login">
-                  <button className="bg-blue-500 px-4 py-2 rounded-md mr-4 hover:bg-blue-600 transition duration-300">
+                  <button className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
                     Login
                   </button>
                 </Link>
